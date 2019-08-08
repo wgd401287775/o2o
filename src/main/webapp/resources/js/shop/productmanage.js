@@ -12,7 +12,7 @@ $(function () {
                 });
                 $(".product-wrap").html(tempHtml);
            } else {
-               $.alert("商品列表加载失败," + data.errorMsg)
+               $.alert("商品列表加载失败," + data.errorMsg);
            }
        });
    }
