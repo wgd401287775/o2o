@@ -2,14 +2,11 @@ $(function () {
     var productId = getQueryString("productId");
     var editUrl = "";
     var categoryUrl = "/o2o/shop/getproductcategorylistbyshopid";
-    var isEdit = false;
     if(productId){
         editUrl = "/o2o/shop/productmodify";
-        isEdit = true;
         getProductInfo(productId);
     } else {
         editUrl = "/o2o/shop/productinsert";
-        isEdit = false;
         getProductInitInfo();
     }
 
@@ -21,7 +18,7 @@ $(function () {
         if($(".detail-img").length < 6 && $(this).val()){
             $("#detail-img").append("<input type=\"file\" class=\"detail-img\">");
         }
-    })
+    });
 
     function getProductInitInfo(){
         $.getJSON(categoryUrl, function (data) {
@@ -35,4 +32,30 @@ $(function () {
             }
         })
     }
+
+    $("#submit").click(function () {
+        var product = {};
+        product.productName = $("#product-name").val();
+        product.productCategory = {
+            productCategoryId : $("#category").find("option").not(function () {
+                return !this.selected;
+            }).data("id")
+        };
+        product.productDesc = $('#product-desc').val();
+        product.priority = $('#priority').val();
+        product.normalPrice = $('#normal-price').val();
+        product.promotionPrice = $('#promotion-price').val();
+        var formData = new FormData();
+        var smallImg = $("#small-img")[0].files[0];
+        formData.append("productStr", product);
+        formData.append("smallImg", smallImg);
+        $(".detail-img").map(function (index, item) {
+            if($(".detail-img")[index].files.length > 0){
+                alert(index);
+                $('.detail-img')[index].files[0];
+                formData.append("detailImg"+index, $('.detail-img')[index].files[0]);
+            }
+        })
+
+    });
 })
