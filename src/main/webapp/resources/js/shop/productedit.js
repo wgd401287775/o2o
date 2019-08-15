@@ -2,8 +2,11 @@ $(function () {
     var productId = getQueryString("productId");
     var editUrl = "";
     var categoryUrl = "/o2o/shop/getproductcategorylistbyshopid";
+    var infoUrl = "/o2o/shop/getproductbyproductid";
+    var isEdit = false;
     if(productId){
         editUrl = "/o2o/shop/productmodify";
+        isEdit = true;
         getProductInfo(productId);
     } else {
         editUrl = "/o2o/shop/productinsert";
@@ -11,7 +14,27 @@ $(function () {
     }
 
     function getProductInfo(productId) {
-
+        $.getJSON(infoUrl, {productId:productId}, function (data) {
+            if(data.success){
+                var product = data.product;
+                $("#product-name").val(product.productName);
+                $("#priority").val(product.priority);
+                $("#normal-price").val(product.normalPrice);
+                $("#promotion-price").val(product.promotionPrice);
+                $("#product-desc").val(product.productDesc);
+                var optionHtml = "";
+                data.productCategoryList.map(function (item, index) {
+                    if(item.productCategoryId == product.productCategory.productCategoryId){
+                        optionHtml += "<option data-id='"+item.productCategoryId+"' selected>"+item.productCategoryName+"</option>"
+                    } else {
+                        optionHtml += "<option data-id='"+item.productCategoryId+"'>"+item.productCategoryName+"</option>"
+                    }
+                });
+                $("#category").html(optionHtml);
+            } else {
+                $.alert(data.errorMsg);
+            }
+        });
     }
 
     $("#detail-img").on("change",".detail-img:last-child",function () {
@@ -35,6 +58,9 @@ $(function () {
 
     $("#submit").click(function () {
         var product = {};
+        if(isEdit){
+            product.productId = productId;
+        }
         product.productName = $("#product-name").val();
         product.productCategory = {
             productCategoryId : $("#category").find("option").not(function () {

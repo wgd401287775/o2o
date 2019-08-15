@@ -24,12 +24,49 @@
             <result property="shopName" column="shop_name"></result>
         </association>
     </resultMap>
-    <select id="queryProductList" parameterType="long" resultMap="ProductMap">
+    <sql id="selectProduct" >
         select p.product_id, p.product_name, p.product_desc, p.img_addr, p.normal_price, p.promotion_price, p.priority,
         p.create_time, p.last_edit_time, p.enable_status, p.point, pc.product_category_id, pc.product_category_name, s.shop_id, s.shop_name
         from tb_product p
         INNER JOIN tb_product_category pc on p.product_category_id = pc.product_category_id
         inner join tb_shop s on s.shop_id = p.shop_id
+    </sql>
+    
+    <select id="queryProductList" parameterType="long" resultMap="ProductMap">
+        <include refid="selectProduct" />
         where p.shop_id = #{shopId};
     </select>
+
+    <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true"
+            keyColumn="product_id" keyProperty="productId">
+        insert into tb_product(product_id, product_name, product_desc, img_addr, normal_price, promotion_price, priority,
+        create_time, last_edit_time, enable_status, point, product_category_id, shop_id)
+        values(#{productId}, #{productName}, #{productDesc}, #{imgAddr}, #{normalPrice}, #{promotionPrice},
+        #{priority}, #{createTime}, #{lastEditTime}, #{enableStatus}, #{point}, #{productCategory.productCategoryId}, #{shop.shopId});
+    </insert>
+    
+    <select id="queryProductByProductId" parameterType="long" resultMap="ProductMap">
+        <include refid="selectProduct" />
+        where p.product_id = #{productId}
+    </select>
+
+    <update id="modifyProduct" parameterType="Product">
+        update tb_product
+        <set>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="productDesc != null">product_desc = #{productDesc},</if>
+            <if test="imgAddr != null">img_addr = #{imgAddr},</if>
+            <if test="normalPrice != null">normal_price = #{normalPrice},</if>
+            <if test="promotionPrice != null">promotion_price = #{promotionPrice},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="lastEditTime != null">last_edit_time = #{lastEditTime},</if>
+            <if test="enableStatus != null">enable_status = #{enableStatus},</if>
+            <if test="point != null">point = #{point},</if>
+            <if test="productCategory != null and productCategory.productCategoryId != null">
+                product_category_id = #{productCategory.productCategoryId},
+            </if>
+        </set>
+        where product_id = #{productId}
+        and shop_id = #{shop.shopId}
+    </update>
 </mapper>

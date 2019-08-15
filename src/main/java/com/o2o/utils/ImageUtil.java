@@ -2,13 +2,16 @@ package com.o2o.utils;
 
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class ImageUtil {
@@ -33,7 +36,7 @@ public class ImageUtil {
         try {
             Thumbnails
                     .of(io)
-                    .size(1000, 1000)
+                    .size(200, 200)
                     .watermark(
                             Positions.BOTTOM_RIGHT,
                             ImageIO.read(new File(basePath + "/watermark.jpg")),
@@ -43,6 +46,43 @@ public class ImageUtil {
             throw new RuntimeException("图片上传失败");
         }
         return relativeAddr;
+    }
+
+    public static String generateNormalImg(InputStream io, String imgName, String targetAddr){
+        String realFileName = getRandomFileName();// 获得文件名
+        String extension = imgName.substring(imgName.lastIndexOf("."));
+        makeDirPath(targetAddr);
+        String relativeAddr = targetAddr + realFileName + extension;
+        File dest = new File(PathUtil.getImgBasePath() + relativeAddr);
+        try {
+            Thumbnails.of(io).size(337, 640).outputQuality(0.5f).toFile(dest);
+        } catch (Exception e) {
+            throw new RuntimeException("创建缩略图失败：" + e.toString());
+        }
+        return relativeAddr;
+    }
+
+    public static List<String> generateNormalImgList(List<CommonsMultipartFile> imgs, String targetAddr){
+        int count = 0;
+        List<String> relativeAddrList = new ArrayList<>();
+        if (imgs != null && imgs.size() > 0) {
+            makeDirPath(targetAddr);
+            for (CommonsMultipartFile img : imgs){
+                String imgName = img.getOriginalFilename();
+                String realFileName = getRandomFileName();// 获得文件名
+                String extension = imgName.substring(imgName.lastIndexOf("."));
+                String relativeAddr = targetAddr + realFileName + count + extension;
+                File dest = new File(PathUtil.getImgBasePath() + relativeAddr);
+                count++;
+                try {
+                    Thumbnails.of(img.getInputStream()).size(600, 300).outputQuality(0.5f).toFile(dest);
+                } catch (Exception e) {
+                    throw new RuntimeException("创建缩略图失败：" + e.toString());
+                }
+                relativeAddrList.add(relativeAddr);
+            }
+        }
+        return relativeAddrList;
     }
 
     /**

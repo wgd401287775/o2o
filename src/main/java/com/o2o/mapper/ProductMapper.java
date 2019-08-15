@@ -1,6 +1,7 @@
 package com.o2o.mapper;
 
 import com.o2o.pojo.Product;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -12,4 +13,26 @@ public interface ProductMapper {
      * @return
      */
     List<Product> queryProductList(long shopId);
+
+    /**
+     * 插入商品
+     *
+     * @param product
+     * @return
+     */
+    int insertProduct(Product product);
+
+    /**
+     * 根据商品ID获取商品
+     * @param productId
+     * @return
+     */
+    Product queryProductByProductId(long productId);
+
+    /**
+     * 商品编辑
+     * @param product
+     * @return
+     */
+    int modifyProduct(Product product);
 }
