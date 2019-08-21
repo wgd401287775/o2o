@@ -9,10 +9,10 @@ public interface ProductMapper {
 
     /**
      * 获取店铺下的商品列表
-     * @param shopId
+     * @param product
      * @return
      */
-    List<Product> queryProductList(long shopId);
+    List<Product> queryProductList(@Param("product") Product product);
 
     /**
      * 插入商品

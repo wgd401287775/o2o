@@ -29,8 +29,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductImgMapper productImgMapper;
 
     @Override
-    public ProductExecution getProductList(long shopId) {
-        List<Product> productList = productMapper.queryProductList(shopId);
+    public ProductExecution getProductList(Product product) {
+        List<Product> productList = productMapper.queryProductList(product);
         return new ProductExecution(ProductStateEnum.SUCCESS, productList);
     }
 

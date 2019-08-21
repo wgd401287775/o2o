@@ -1,11 +1,10 @@
 package com.o2o.utils;
 
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 /**
  * 淘淘商城自定义响应结构
@@ -36,7 +35,7 @@ public class JsonUtils {
      * 将json结果集转化为对象
      * 
      * @param jsonData json数据
-     * @param clazz 对象中的object类型
+     * @param beanType 对象中的object类型
      * @return
      */
     public static <T> T jsonToPojo(String jsonData, Class<T> beanType) {

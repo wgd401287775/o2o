@@ -202,7 +202,7 @@
 
   </dependencies>
   <build>
-    <finalName>myo2o</finalName>
+    <finalName>o2o</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -7,7 +7,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.util.List;
 
 public interface ProductService  {
-    ProductExecution getProductList(long shopId);
+    ProductExecution getProductList(Product product);
 
     ProductExecution insertProduct(Product product, CommonsMultipartFile productImg, List<CommonsMultipartFile> detailImgList);
 

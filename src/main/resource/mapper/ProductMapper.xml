@@ -32,9 +32,16 @@
         inner join tb_shop s on s.shop_id = p.shop_id
     </sql>
     
-    <select id="queryProductList" parameterType="long" resultMap="ProductMap">
+    <select id="queryProductList" parameterType="Product" resultMap="ProductMap">
         <include refid="selectProduct" />
-        where p.shop_id = #{shopId};
+        <where>
+            <if test="product != null and product.shop != null and product.shop.shopId != null">
+                and p.shop_id = #{product.shop.shopId}
+            </if>
+            <if test="product != null and product.productCategory != null and product.productCategory.productCategoryId != null">
+                and pc.product_category_id = #{product.productCategory.productCategoryId}
+            </if>
+        </where>
     </select>
 
     <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true"

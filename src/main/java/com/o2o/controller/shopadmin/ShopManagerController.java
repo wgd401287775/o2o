@@ -12,6 +12,7 @@ import com.o2o.service.ShopCategoryService;
 import com.o2o.service.ShopService;
 import com.o2o.utils.CodeUtil;
 import com.o2o.utils.HttpServletRequestUtil;
+import com.o2o.utils.JsonUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,7 +42,6 @@ public class ShopManagerController {
     @RequestMapping(value = "/registershop", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> registerShop(HttpServletRequest request){
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> resultMap = new HashMap<>();
         if(!CodeUtil.checkVerifyCode(request)){
             resultMap.put("success", false);
@@ -50,14 +50,7 @@ public class ShopManagerController {
         }
         // 1.接受并转化相应的参数，包括店铺信息以及图片信息
         String shopStr = HttpServletRequestUtil.getString(request, "shopStr");
-        Shop shop = null;
-        try {
-            shop = mapper.readValue(shopStr, Shop.class);
-        }catch (Exception e){
-            resultMap.put("success", false);
-            resultMap.put("errMsg", e.getMessage());
-            return resultMap;
-        }
+        Shop shop = JsonUtils.jsonToPojo(shopStr, Shop.class);
         // 获取request中的文件
         CommonsMultipartFile shopImg = null;
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(
@@ -97,7 +90,6 @@ public class ShopManagerController {
     @RequestMapping(value = "/modifyshop", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> modifyShop(HttpServletRequest request){
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> resultMap = new HashMap<>();
         if(!CodeUtil.checkVerifyCode(request)){
             resultMap.put("success", false);
@@ -105,14 +97,7 @@ public class ShopManagerController {
             return resultMap;
         }
         String shopStr = HttpServletRequestUtil.getString(request, "shopStr");
-        Shop shop = null;
-        try {
-            shop = mapper.readValue(shopStr, Shop.class);
-        }catch (Exception e){
-            resultMap.put("success", false);
-            resultMap.put("errMsg", e.getMessage());
-            return resultMap;
-        }
+        Shop shop = JsonUtils.jsonToPojo(shopStr, Shop.class);
         CommonsMultipartFile shopImg = null;
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(
                 request.getSession().getServletContext());

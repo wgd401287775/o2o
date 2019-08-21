@@ -1,6 +1,5 @@
 package com.o2o.controller.shopadmin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.o2o.dto.ProductExecution;
 import com.o2o.enums.ProductStateEnum;
 import com.o2o.pojo.Product;
@@ -10,6 +9,7 @@ import com.o2o.service.ProductCategoryService;
 import com.o2o.service.ProductService;
 import com.o2o.utils.CodeUtil;
 import com.o2o.utils.HttpServletRequestUtil;
+import com.o2o.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +42,9 @@ public class ProductManagerController {
         Shop shop = (Shop) request.getSession().getAttribute("currentShop");
         if(shop != null) {
             try {
-                ProductExecution pe = productService.getProductList(shop.getShopId());
+                Product product = new Product();
+                product.setShop(shop);
+                ProductExecution pe = productService.getProductList(product);
                 resultMap.put("success", true);
                 resultMap.put("productList", pe.getProductList());
             } catch (Exception e) {
@@ -55,6 +56,24 @@ public class ProductManagerController {
             resultMap.put("errorMsg", "empty pageSize or pageIndex or shopId");
         }
         return resultMap;
+    }
+
+    @RequestMapping(value = "/productchangestatus", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> productChangeStatus(HttpServletRequest request){
+        Map<String, Object> result = new HashMap<>();
+        Shop shop = (Shop) request.getSession().getAttribute("currentShop");
+        String productStr = HttpServletRequestUtil.getString(request, "productStr");
+        Product product = JsonUtils.jsonToPojo(productStr, Product.class);
+        product.setShop(shop);
+        ProductExecution pe = productService.modifyProduct(product, null, null);
+        if(pe.getState() == ProductStateEnum.SUCCESS.getState()){
+            result.put("success", true);
+        } else {
+            result.put("success", false);
+            result.put("errorMsg", "商品上下架失败！");
+        }
+        return result;
     }
 
     @RequestMapping("/getproductcategorylistbyshopid")
@@ -79,16 +98,7 @@ public class ProductManagerController {
             return resultMap;
         }
         String productStr = HttpServletRequestUtil.getString(request, "productStr");
-        ObjectMapper json = new ObjectMapper();
-        Product product = null;
-        try {
-            product = json.readValue(productStr, Product.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            resultMap.put("success", false);
-            resultMap.put("errorMsg", e.getMessage());
-            return resultMap;
-        }
+        Product product = JsonUtils.jsonToPojo(productStr, Product.class);
         CommonsMultipartFile productImg = null;
         List<CommonsMultipartFile> detailImgList = new ArrayList<>();
         CommonsMultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -135,16 +145,7 @@ public class ProductManagerController {
             return result;
         }
         String productStr = HttpServletRequestUtil.getString(request, "productStr");
-        ObjectMapper json = new ObjectMapper();
-        Product product = null;
-        try {
-            product = json.readValue(productStr, Product.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            result.put("success", false);
-            result.put("errorMsg", e.getMessage());
-            return result;
-        }
+        Product product = JsonUtils.jsonToPojo(productStr, Product.class);
         CommonsMultipartFile productImg = null;
         List<CommonsMultipartFile> detailImgList = new ArrayList<>();
         CommonsMultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());

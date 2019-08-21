@@ -2,10 +2,13 @@ package com.o2o.controller.shopadmin;
 
 import com.o2o.dto.OResult;
 import com.o2o.dto.ProductCategoryExecution;
+import com.o2o.dto.ProductExecution;
 import com.o2o.enums.ProductCategoryStateEnum;
+import com.o2o.pojo.Product;
 import com.o2o.pojo.ProductCategory;
 import com.o2o.pojo.Shop;
 import com.o2o.service.ProductCategoryService;
+import com.o2o.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +27,8 @@ import java.util.Map;
 public class ProductCategoryManagerController {
     @Autowired
     private ProductCategoryService productCategoryService;
+    @Autowired
+    private ProductService productService;
 
     @RequestMapping(value = "/getproductcategorylist", method = RequestMethod.GET)
     @ResponseBody
@@ -86,6 +91,16 @@ public class ProductCategoryManagerController {
                 return map;
             }
             try {
+                Product product = new Product();
+                ProductCategory productCategory = new ProductCategory();
+                productCategory.setProductCategoryId(productCategoryId);
+                product.setProductCategory(productCategory);
+                ProductExecution list = productService.getProductList(product);
+                if (list.getProductList() != null && list.getProductList().size() > 0) {
+                    map.put("success", false);
+                    map.put("errorMsg", "请先删除该分类下的商品！");
+                    return map;
+                }
                 ProductCategoryExecution pe = productCategoryService.deleteProductCategory(shop.getShopId(), productCategoryId);
                 if(pe.getState() == ProductCategoryStateEnum.SUCCESS.getState()){
                     map.put("success", true);
