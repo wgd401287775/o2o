@@ -82,11 +82,15 @@
             and shopCondition.shopCategory.shopCategoryId != null">
               and s.shop_category_id = #{shopCondition.shopCategory.shopCategoryId}
             </if>
+            <if test="shopCondition.parentCategory != null
+            and shopCondition.parentCategory.shopCategoryId != null">
+                and s.shop_category_id in (select sc.shop_category_id from tb_shop_category sc where sc.parent_id = #{shopCondition.parentCategory.shopCategoryId})
+            </if>
             <if test="shopCondition.area != null and shopCondition.area.areaId != null">
                 and s.area_id = #{shopCondition.area.areaId}
             </if>
             <if test="shopCondition.shopName != null">
-                and s.shop_name = #{shopCondition.shopName}
+                and s.shop_name like CONCAT('%', #{shopCondition.shopName}, '%')
             </if>
             <if test="shopCondition.enableStatus != null">
                 and s.enable_status = #{shopCondition.enableStatus}
@@ -108,11 +112,15 @@
             and shopCondition.shopCategory.shopCategoryId != null">
                 and s.shop_category_id = #{shopCondition.shopCategory.shopCategoryId}
             </if>
+            <if test="shopCondition.parentCategory != null
+            and shopCondition.parentCategory.shopCategoryId != null">
+                and s.shop_category_id in (select sc.shop_category_id from tb_shop_category sc where sc.parent_id = #{shopCondition.parentCategory.shopCategoryId})
+            </if>
             <if test="shopCondition.area != null and shopCondition.area.areaId != null">
                 and s.area_id = #{shopCondition.area.areaId}
             </if>
             <if test="shopCondition.shopName != null">
-                and s.shop_name = #{shopCondition.shopName}
+                and s.shop_name like CONCAT('%', #{shopCondition.shopName}, '%')
             </if>
             <if test="shopCondition.enableStatus != null">
                 and s.enable_status = #{shopCondition.enableStatus}

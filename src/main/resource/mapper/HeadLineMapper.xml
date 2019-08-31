@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.o2o.mapper.HeadLineMapper">
+    <select id="getHeadLineList" resultType="HeadLine" >
+        select thl.line_id, thl.line_name, thl.line_link, thl.line_img, thl.enable_status,
+        thl.priority from tb_head_line thl
+        <where>
+            <if test="headLine != null and headLine.enableStatus != null" >
+                and thl.enable_status = #{headLine.enableStatus}
+            </if>
+        </where>
+        order by thl.priority desc
+    </select>
+</mapper>

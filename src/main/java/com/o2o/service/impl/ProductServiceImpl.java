@@ -8,6 +8,7 @@ import com.o2o.pojo.Product;
 import com.o2o.pojo.ProductImg;
 import com.o2o.service.ProductService;
 import com.o2o.utils.ImageUtil;
+import com.o2o.utils.PageCalculator;
 import com.o2o.utils.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,6 +95,22 @@ public class ProductServiceImpl implements ProductService {
     public Product queryProductById(long productId) {
         Product product = productMapper.queryProductByProductId(productId);
         return product;
+    }
+
+    @Override
+    public ProductExecution getPageProductList(Product product, int pageIndex, int pageSize) {
+        int rowIndex = PageCalculator.calculatorRowIndex(pageIndex, pageSize);
+        ProductExecution pe = null;
+        try {
+            List<Product> productList = productMapper.getPageProductList(product, rowIndex, pageSize);
+            int count = productMapper.getProductCount(product);
+            pe = new ProductExecution(ProductStateEnum.SUCCESS, productList);
+            pe.setCount(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+            pe = new ProductExecution(ProductStateEnum.INNER_ERROR);
+        }
+        return pe;
     }
 
     private void addProductImgs(Product product, List<CommonsMultipartFile> detailImgList) throws RuntimeException {

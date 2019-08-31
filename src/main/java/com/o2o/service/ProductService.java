@@ -14,4 +14,6 @@ public interface ProductService  {
     ProductExecution modifyProduct(Product product, CommonsMultipartFile productImg, List<CommonsMultipartFile> detailImgList);
 
     Product queryProductById(long productId);
+
+    ProductExecution getPageProductList(Product product, int pageIndex, int pageSize);
 }

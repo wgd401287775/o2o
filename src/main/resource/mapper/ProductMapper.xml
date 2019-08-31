@@ -44,6 +44,45 @@
         </where>
     </select>
 
+    <select id="getPageProductList" resultMap="ProductMap">
+        <include refid="selectProduct" />
+        <where>
+            <if test="product != null and product.shop != null and product.shop.shopId != null">
+                and p.shop_id = #{product.shop.shopId}
+            </if>
+            <if test="product != null and product.productName != null">
+                and p.product_name like CONCAT('%', #{product.productName}, '%')
+            </if>
+            <if test="product != null and product.productCategory != null and product.productCategory.productCategoryId != null">
+                and pc.product_category_id = #{product.productCategory.productCategoryId}
+            </if>
+            <if test="product != null and product.enableStatus != null">
+                and p.enable_status = #{product.enableStatus}
+            </if>
+        </where>
+        order by p.priority desc
+        limit #{rowIndex}, #{pageSize}
+    </select>
+    <select id="getProductCount" resultType="int">
+        select count(1) from tb_product p
+        INNER JOIN tb_product_category pc on p.product_category_id = pc.product_category_id
+        inner join tb_shop s on s.shop_id = p.shop_id
+        <where>
+            <if test="product != null and product.shop != null and product.shop.shopId != null">
+                and p.shop_id = #{product.shop.shopId}
+            </if>
+            <if test="product != null and product.productName != null">
+                and p.product_name like CONCAT('%', #{product.productName}, '%')
+            </if>
+            <if test="product != null and product.productCategory != null and product.productCategory.productCategoryId != null">
+                and pc.product_category_id = #{product.productCategory.productCategoryId}
+            </if>
+            <if test="product != null and product.enableStatus != null">
+                and p.enable_status = #{product.enableStatus}
+            </if>
+        </where>
+    </select>
+
     <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true"
             keyColumn="product_id" keyProperty="productId">
         insert into tb_product(product_id, product_name, product_desc, img_addr, normal_price, promotion_price, priority,

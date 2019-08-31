@@ -35,4 +35,20 @@ public interface ProductMapper {
      * @return
      */
     int modifyProduct(Product product);
+
+    /**
+     * 分页查询商品列表
+     * @param product
+     * @return
+     */
+    List<Product> getPageProductList(@Param("product") Product product,
+                               @Param("rowIndex") int rowIndex,
+                               @Param("pageSize") int pageSize);
+
+    /**
+     * 查询商品数量
+     * @param product
+     * @return
+     */
+    int getProductCount(@Param("product") Product product);
 }
