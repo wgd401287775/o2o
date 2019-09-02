@@ -121,6 +121,10 @@ public class PersonInfo {
 	public void setEnableStatus(Integer enableStatus) {
 		this.enableStatus = enableStatus;
 	}
+	
+	public String toString() {
+		return "hello";
+	}
 
 	@Override
 	public String toString() {
