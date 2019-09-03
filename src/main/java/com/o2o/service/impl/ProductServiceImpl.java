@@ -60,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductExecution modifyProduct(Product product, CommonsMultipartFile productImg, List<CommonsMultipartFile> detailImgList) {
         if(product == null) {
             return new ProductExecution(ProductStateEnum.EMPTY);

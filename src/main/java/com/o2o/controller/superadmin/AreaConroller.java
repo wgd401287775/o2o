@@ -1,4 +1,4 @@
-package com.o2o.controller;
+package com.o2o.controller.superadmin;
 
 import com.o2o.pojo.Area;
 import com.o2o.service.AreaService;
