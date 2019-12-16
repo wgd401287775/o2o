@@ -48,6 +48,31 @@ public class ImageUtil {
         return relativeAddr;
     }
 
+    /**
+     * 上传文件 无水印
+     * @param io
+     * @param imgName
+     * @param targetAddr
+     * @return
+     */
+    public static String generateNoWatermarkThumbnail(InputStream io, String imgName, String targetAddr){
+        String realFileName = getRandomFileName();// 获得文件名
+        String extension = imgName.substring(imgName.lastIndexOf("."));
+        makeDirPath(targetAddr);// 创建文件夹
+        String relativeAddr = targetAddr + realFileName + extension;
+        File dest = new File(PathUtil.getImgBasePath() + relativeAddr);
+        try {
+            Thumbnails
+                    .of(io)
+                    .size(200, 200)
+                    .outputQuality(0.8f).toFile(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("图片上传失败");
+        }
+        return relativeAddr;
+    }
+
     public static String generateNormalImg(InputStream io, String imgName, String targetAddr){
         String realFileName = getRandomFileName();// 获得文件名
         String extension = imgName.substring(imgName.lastIndexOf("."));

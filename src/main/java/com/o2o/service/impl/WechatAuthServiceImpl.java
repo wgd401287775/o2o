@@ -49,7 +49,7 @@ public class WechatAuthServiceImpl implements WechatAuthService {
                     user.setAdminFlag(0);
                     user.setEnableStatus(1);
                     int i = personInfoMapper.insertPersonInfo(user);
-                    if(i < 0) {
+                    if(i <= 0) {
                         throw new RuntimeException("添加用户信息失败");
                     } else {
                         wechatAuth.setUserId(user.getUserId());
@@ -76,7 +76,7 @@ public class WechatAuthServiceImpl implements WechatAuthService {
 
     private void addProfileImg(WechatAuth wechatAuth, CommonsMultipartFile profileImg) throws IOException {
         String personInfoImagePath = PathUtil.getPersonInfoImagePath();
-        String profileImgAddr = ImageUtil.generateThumbnail(profileImg.getInputStream(), profileImg.getOriginalFilename(), personInfoImagePath);
+        String profileImgAddr = ImageUtil.generateNoWatermarkThumbnail(profileImg.getInputStream(), profileImg.getOriginalFilename(), personInfoImagePath);
         wechatAuth.getPersonInfo().setProfileImg(profileImgAddr);
     }
 }

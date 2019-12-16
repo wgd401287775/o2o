@@ -36,4 +36,14 @@ public class ShopAdminController {
     public String productEdit(){
         return "shop/productedit";
     }
+
+    @RequestMapping("/register")
+    public String register(){
+        return "shop/register";
+    }
+
+    @RequestMapping("/ownerlogin")
+    public String ownerlogin(){
+        return "shop/ownerlogin";
+    }
 }
